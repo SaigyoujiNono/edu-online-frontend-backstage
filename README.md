@@ -4,6 +4,7 @@
 - vue2+element-ui
 - vue-router作为路由
 - vuex作为全局状态管理
+- axios发送请求
 
 
 ## 运行本项目
