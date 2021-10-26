@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="avatar-container">
-      <img :src="avatar" class="avatar-show" alt="头像">
+      <img :src="avatar" class="avatar-show" alt="图片">
     </div>
     <el-upload
       class="upload-demo"

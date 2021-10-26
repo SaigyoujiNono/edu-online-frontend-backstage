@@ -97,10 +97,38 @@ export const constantRoutes = [
       {
         path: 'add',
         name: '添加课程',
-        component: () => import('@/views/tree/index'),
+        component: () => import('@/views/edu/subject/SubjectAdd'),
         meta: { title: '添加分类', icon: 'el-icon-plus' }
       }
 
+    ]
+  },
+  {
+    path: '/course',
+    component: Layout,
+    redirect: '/course/courseList',
+    name: '课程管理',
+    meta: { title: '课程管理', icon: 'el-icon-s-order' },
+    children: [
+      {
+        path: 'list',
+        name: '课程列表',
+        component: () => import('@/views/edu/subject/SubjectList'),
+        meta: { title: '课程列表', icon: 'tree' }
+      },
+      {
+        path: 'info',
+        name: '添加课程',
+        component: () => import('@/views/edu/course/Course'),
+        meta: { title: '添加课程', icon: 'el-icon-plus' }
+      },
+      {
+        path: 'info/:step/:id',
+        name: '添加课程',
+        component: () => import('@/views/edu/course/Course'),
+        meta: { title: '添加课程', icon: 'el-icon-plus', noCache: true },
+        hidden: true
+      }
     ]
   },
   {
