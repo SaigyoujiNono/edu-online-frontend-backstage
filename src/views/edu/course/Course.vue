@@ -64,7 +64,8 @@ export default {
         this.$router.push(`/course/info/${this.active - 1}/${this.id}`)
       }
     },
-    infoUpload() {
+    infoUpload(id) {
+      this.id = id
       this.$router.push(`/course/info/${this.active + 1}/${this.id}`)
     }
   }

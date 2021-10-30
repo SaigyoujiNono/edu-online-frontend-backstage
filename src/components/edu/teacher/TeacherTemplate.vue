@@ -57,7 +57,7 @@ export default {
   },
   data() {
     return {
-      avatarAction: 'http://127.0.0.1:8002/oss/file/avatar',
+      avatarAction: process.env.VUE_APP_BASE_API + '/oss/file/imgUpload',
       teacher: {
         id: null,
         name: null,

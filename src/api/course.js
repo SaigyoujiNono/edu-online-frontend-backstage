@@ -9,3 +9,14 @@ export function addCourseInfo(info) {
     }
   })
 }
+
+
+export function getCourseInfo(option) {
+  return request({
+    url: '/eduservice/course/courseInfo',
+    method: 'post',
+    params: {
+      ...option
+    }
+  })
+}

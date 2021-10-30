@@ -1,15 +1,11 @@
 <template>
-  <div>
+  <div class="course-cover">
     <el-upload
-      drag
       :action="actionUrl"
       multiple
       :on-success="uploadSuccessful"
     >
       <img :src="url" class="img-show" alt="图片">
-      <i class="el-icon-upload" />
-      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1MB</div>
     </el-upload>
   </div>
 </template>
@@ -25,7 +21,7 @@ export default {
   },
   data() {
     return {
-      actionUrl: '/oss/file/imgUpload'
+      actionUrl: process.env.VUE_APP_BASE_API + '/oss/file/imgUpload'
     }
   },
   methods: {
@@ -38,6 +34,7 @@ export default {
 
 <style scoped>
 .img-show{
-  width: 360px;
+  width: 480px;
+  height: 360px;
 }
 </style>

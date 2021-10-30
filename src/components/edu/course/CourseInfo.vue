@@ -45,14 +45,9 @@
       <ImageUpload :url="courseInfo.cover" @img-upload="imgUploaded" />
     </el-form-item>
     <el-form-item label="课程简介" prop="description">
-      <el-input
-        v-model="courseInfo.description"
-        type="textarea"
-        placeholder="请输入内容"
-        maxlength="30"
-        show-word-limit
-      />
+      <Tinymce v-model="courseInfo.description" />
     </el-form-item>
+
   </el-form>
 </template>
 
@@ -61,9 +56,16 @@ import ImageUpload from '@/components/common/ImageUpload'
 import { getSubject } from '@/api/subject'
 import { getTeacherAll } from '@/api/teacher'
 import { addCourseInfo } from '@/api/course'
+import Tinymce from '@/components/Tinymce'
 export default {
   name: 'CourseInfo',
-  components: { ImageUpload },
+  components: { ImageUpload, Tinymce },
+  props: {
+    courseInfoUpdate: { // 当有值进来的时候表示更新操作
+      default: null,
+      type: Object
+    }
+  },
   data() {
     return {
       loading: true,
@@ -73,6 +75,7 @@ export default {
         children: null
       },
       courseInfo: {
+        id: null,
         title: null,
         lessonNum: null,
         subjectParentId: null,
@@ -123,6 +126,10 @@ export default {
     })
     Promise.all([sub, teachers]).then(value => {
       this.loading = false
+      // 判断是否是更新，当props有值的时候就是更新状态
+      if (this.courseInfoUpdate) {
+        this.courseInfo = { ...this.courseInfoUpdate }
+      }
     })
   },
   methods: {
@@ -130,12 +137,17 @@ export default {
       this.$refs['courseInfo'].validate((valid) => {
         if (valid) {
           this.loading = true
-          addCourseInfo(this.courseInfo).then(res => {
-            this.loading = false
-            this.$emit('info-upload', res.data.courseInfo.id)
-          }).catch(() => {
-            this.loading = false
-          })
+          // 如果id存在表示更新
+          if (this.id) {
+            console.log(`${this.id},要更新`)
+          } else {
+            addCourseInfo(this.courseInfo).then(res => {
+              this.loading = false
+              this.$emit('info-upload', res.data.courseInfo.id)
+            }).catch(() => {
+              this.loading = false
+            })
+          }
         } else {
           this.$message({
             type: 'error',
@@ -145,7 +157,9 @@ export default {
         }
       })
     },
-    imgUploaded() {}
+    imgUploaded(url) {
+      this.courseInfo.cover = url
+    }
   }
 }
 </script>
