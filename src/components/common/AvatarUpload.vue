@@ -5,6 +5,8 @@
       title="上传头像"
       :visible.sync="cropperVisible"
       width="800px"
+      :modal-append-to-body="false"
+      :append-to-body="true"
     >
       <div class="cropper">
         <VueCropper

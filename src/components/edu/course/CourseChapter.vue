@@ -1,16 +1,37 @@
 <template>
   <div class="course-chapter-container">
     <el-button type="primary" class="header-btn" icon="el-icon-edit" @click="addChapterDialog">添加章节</el-button>
-    <el-button type="primary" class="header-btn" icon="el-icon-edit" @click="addChapter">保存章节</el-button>
     <el-collapse v-model="activeName">
-      <el-collapse-item v-for="(chapter,index) in primaryChapter" :key="index" :name="index+1+''">
+      <el-collapse-item v-for="(chapter,index) in primaryChapter" :key="chapter.id" :name="index+1+''">
         <template slot="title">
-          <h1>{{ index }}--{{ chapter.title }}</h1>
+          <h1 style="display: inline-block">{{ chapter.title }}</h1>
           <el-button type="primary" class="title-btn" size="mini" icon="el-icon-edit" @click.stop="editChapter(index)">编辑</el-button>
-          <el-button type="primary" class="title-btn" size="mini" icon="el-icon-edit" @click.stop="addVideoDialog(index)">添加小节</el-button>
-          <el-button type="primary" class="title-btn" size="mini" icon="el-icon-edit">删除</el-button>
+          <el-button type="primary" class="title-btn" size="mini" icon="el-icon-circle-plus-outline" @click.stop="addVideoDialog(index)">添加小节</el-button>
+          <el-popconfirm
+            confirm-button-text="确认"
+            cancel-button-text="不用了"
+            icon="el-icon-info"
+            icon-color="red"
+            title="确定要删除这个章节吗？如果该章节下存在小节将无法删除"
+            @onConfirm="removeChapter()"
+          >
+            <el-button slot="reference" type="danger" class="title-btn" size="mini" icon="el-icon-delete" @click.stop>删除</el-button>
+          </el-popconfirm>
         </template>
-        <div v-for="(video,vi) in chapter.children" :key="vi">{{ vi }}--{{ video.title }}</div>
+        <el-card v-for="video in chapter.children" :key="video.id" class="second-video" shadow="hover">
+          <h2 style="display: inline-block">{{ video.title }}</h2>
+          <el-button type="text" class="video-btn" size="mini" @click.stop="editChapter(index)">编辑</el-button>
+          <el-popconfirm
+            confirm-button-text="确认"
+            cancel-button-text="不用了"
+            icon="el-icon-info"
+            icon-color="red"
+            title="确定要删除这个小节吗？"
+            @onConfirm="removeChapter()"
+          >
+            <el-button slot="reference" type="text" style="color: red" class="video-btn" size="mini">删除</el-button>
+          </el-popconfirm>
+        </el-card>
       </el-collapse-item>
     </el-collapse>
     <!--添加章节的对话框-->
@@ -55,6 +76,8 @@
 </template>
 
 <script>
+import { addChapter, getAllChapterInfo } from '@/api/course'
+
 function sortByProps(props) {
   return function(val1, val2) {
     const v1 = val1[props]
@@ -76,6 +99,12 @@ class VideoTemplate {
 }
 export default {
   name: 'CourseChapter',
+  props: {
+    courseId: {
+      default: null,
+      type: String
+    }
+  },
   data() {
     return {
       VideoDialog: {
@@ -101,7 +130,20 @@ export default {
       primaryChapter: []
     }
   },
+  watch: {
+    courseId() {
+      // 获取所有章节与小节的信息
+      getAllChapterInfo(this.courseId).then(res => {
+        this.primaryChapter = res.data.chapterInfo
+      })
+    }
+  },
+  created() {
+  },
   methods: {
+    removeChapter() {
+      console.log('aaa')
+    },
     // 添加小节的对话框
     addVideoDialog(index) {
       this.videoInfo = new VideoTemplate()
@@ -134,16 +176,20 @@ export default {
     // 添加章节
     addChapter() {
       const chapterAdd = { ...this.chapterInfo }
-      this.primaryChapter.push(chapterAdd)
-      // 如果当前长度大于1则进行排序
-      if (this.primaryChapter.length > 1) {
-        this.sortBySort(this.primaryChapter)
-      }
-      this.ChapterDialogVisible = false
+      chapterAdd.courseId = this.courseId
+      addChapter(chapterAdd).then(res => {
+        this.primaryChapter.push(chapterAdd)
+        // 如果当前长度大于1则进行排序
+        if (this.primaryChapter.length > 1) {
+          this.sortBySort(this.primaryChapter)
+        }
+        this.ChapterDialogVisible = false
+      }).catch(() => {
+        this.ChapterDialogVisible = false
+      })
     },
     // 编辑章节
     editChapterSave() {
-      console.log('editChapterSave')
       this.primaryChapter[this.primaryChapterIndex] = { ...this.chapterInfo }
       // 如果当前长度大于1则进行排序
       if (this.primaryChapter.length > 1) {
@@ -168,5 +214,11 @@ export default {
 }
 .header-btn{
   margin: 10px;
+}
+.second-video{
+  margin-left: 20px;
+}
+.video-btn{
+  margin-left: 20px;
 }
 </style>

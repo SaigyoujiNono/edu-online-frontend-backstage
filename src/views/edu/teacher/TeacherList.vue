@@ -80,6 +80,7 @@
       :visible.sync="dialogFormVisible"
       width="1400px"
       lock-scroll
+      :modal-append-to-body="false"
     >
       <TeacherTemplate ref="teacherTemplate" :teacher-prop="teacherUpdate" @update-successful="rowUpdated" />
       <span slot="footer" class="dialog-footer">

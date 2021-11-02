@@ -55,7 +55,7 @@
 import ImageUpload from '@/components/common/ImageUpload'
 import { getSubject } from '@/api/subject'
 import { getTeacherAll } from '@/api/teacher'
-import { addCourseInfo } from '@/api/course'
+import { addCourseInfo, updateCourseInfo } from '@/api/course'
 import Tinymce from '@/components/Tinymce'
 export default {
   name: 'CourseInfo',
@@ -113,23 +113,22 @@ export default {
         }
       },
       immediate: true
+    },
+    courseInfoUpdate() {
+      this.courseInfo = { ...this.courseInfoUpdate }
     }
   },
   created() {
     const sub = getSubject({ parentId: 0 }).then(res => {
       this.subjectInfo.parent = res.data.primarySubList
-      this.courseInfo.subjectParentId = this.subjectInfo.parent[0].id
     })
     const teachers = getTeacherAll().then(res => {
       this.teacherList = res.data.teacherList
-      this.courseInfo.teacherId = this.teacherList[0].id
     })
     Promise.all([sub, teachers]).then(value => {
+      this.courseInfo.subjectParentId = this.subjectInfo.parent[0].id
+      this.courseInfo.teacherId = this.teacherList[0].id
       this.loading = false
-      // 判断是否是更新，当props有值的时候就是更新状态
-      if (this.courseInfoUpdate) {
-        this.courseInfo = { ...this.courseInfoUpdate }
-      }
     })
   },
   methods: {
@@ -138,8 +137,13 @@ export default {
         if (valid) {
           this.loading = true
           // 如果id存在表示更新
-          if (this.id) {
-            console.log(`${this.id},要更新`)
+          if (this.courseInfo.id) {
+            updateCourseInfo(this.courseInfo).then(res => {
+              this.loading = false
+              this.$emit('info-upload', res.data.courseInfo.id)
+            }).catch(() => {
+              this.loading = false
+            })
           } else {
             addCourseInfo(this.courseInfo).then(res => {
               this.loading = false
