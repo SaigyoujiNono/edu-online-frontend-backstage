@@ -94,7 +94,7 @@ export default {
         ],
         price: [
           { required: true, message: '请输入价格', trigger: 'blur' },
-          { pattern: '^([0-9]{1,}([.][0-9]{1,2})?)$', message: '请输入正确的格式，1-2位小数或整数' }
+          { pattern: '^([0-9]{1,}([.][0-9]{1,2})?)$', message: '请输入正确的格式，1-2位小数或整数', trigger: 'change' }
         ],
         description: [
           { required: true, message: '请输入课程简介', trigger: 'blur' }
@@ -116,6 +116,7 @@ export default {
     },
     courseInfoUpdate() {
       this.courseInfo = { ...this.courseInfoUpdate }
+      this.courseInfo.price = this.courseInfoUpdate.price + ''
     }
   },
   created() {

@@ -106,14 +106,14 @@ export const constantRoutes = [
   {
     path: '/course',
     component: Layout,
-    redirect: '/course/courseList',
+    redirect: '/course/list',
     name: '课程管理',
     meta: { title: '课程管理', icon: 'el-icon-s-goods' },
     children: [
       {
         path: 'list',
         name: '课程列表',
-        component: () => import('@/views/edu/subject/SubjectList'),
+        component: () => import('@/views/edu/course/CourseList'),
         meta: { title: '课程列表', icon: 'tree' }
       },
       {

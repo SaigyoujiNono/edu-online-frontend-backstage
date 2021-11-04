@@ -62,13 +62,10 @@ export function editChapter(chapter) {
 }
 
 // 删除章节
-export function deleteChapter(chapter) {
+export function deleteChapter(chapterId) {
   return request({
-    url: '/eduservice/chapter/chapter',
-    method: 'delete',
-    params: {
-      ...chapter
-    }
+    url: '/eduservice/chapter/chapter/' + chapterId,
+    method: 'delete'
   })
 }
 
@@ -79,6 +76,52 @@ export function addVideo(video) {
     method: 'post',
     data: {
       ...video
+    }
+  })
+}
+
+// 根据id删除小节
+export function deleteVideo(videoId) {
+  return request({
+    url: '/eduservice/video/video/' + videoId,
+    method: 'delete'
+  })
+}
+
+// 修改小节信息
+export function editVideo(video) {
+  return request({
+    url: '/eduservice/video/video/',
+    method: 'put',
+    data: {
+      ...video
+    }
+  })
+}
+
+// 获取发布前的课程基本信息
+export function getBeforePublishCourse(courseId) {
+  return request({
+    url: '/eduservice/course/publishCourse/' + courseId,
+    method: 'get'
+  })
+}
+
+// 确认发布课程
+export function publishCourse(status) {
+  return request({
+    url: `/eduservice/course/publish/${status.pub}/${status.id}`,
+    method: 'put'
+  })
+}
+
+// 根据条件查询获取课程列表
+export function getCourseList(query) {
+  return request({
+    url: '/eduservice/course/getCourseList',
+    method: 'get',
+    params: {
+      ...query
     }
   })
 }
