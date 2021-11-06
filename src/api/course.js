@@ -99,6 +99,14 @@ export function editVideo(video) {
   })
 }
 
+// 删除小节中的视频存储
+export function deleteVideoSave(id) {
+  return request({
+    url: `/eduvod/video/deleteVideo/${id}`,
+    method: 'delete'
+  })
+}
+
 // 获取发布前的课程基本信息
 export function getBeforePublishCourse(courseId) {
   return request({

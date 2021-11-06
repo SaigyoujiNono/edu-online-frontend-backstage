@@ -20,6 +20,8 @@
         </template>
         <el-card v-for="(video,vi) in chapter.children" :key="video.id" class="second-video" shadow="hover">
           <h2 style="display: inline-block">{{ video.title }}</h2>
+          <el-button v-if="video.videoSourceId" size="mini" class="is-upload-video" type="success" icon="el-icon-check" circle />
+          <el-button v-else type="danger" size="mini" class="is-upload-video" icon="el-icon-close" circle />
           <el-button type="text" class="video-btn" size="mini" @click.stop="editVideoDialog(index,vi)">编辑</el-button>
           <el-popconfirm
             confirm-button-text="确认"
@@ -66,7 +68,26 @@
         <el-form-item label="小节排序">
           <el-input-number v-model="videoInfo.sort" label="章节排序" />
         </el-form-item>
-        <el-form-item label="添加视频" />
+        <el-form-item label="是否免费">
+          <el-radio v-model="videoInfo.isFree" :label="true">免费</el-radio>
+          <el-radio v-model="videoInfo.isFree" :label="false">收费</el-radio>
+        </el-form-item>
+        <el-form-item label="添加视频">
+          <el-upload
+            :action="actionUrl"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            :before-upload="beforeUpload"
+            :on-success="successHandler"
+            multiple
+            :limit="1"
+            :on-exceed="handleExceed"
+            :file-list="videoInfo.fileList"
+          >
+            <el-button size="small" type="primary">上传视频</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传flv/mp4文件，且不超过100MB</div>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="VideoDialogVisible = false">取 消</el-button>
@@ -82,7 +103,7 @@ import {
   addChapter,
   addVideo,
   deleteChapter,
-  deleteVideo,
+  deleteVideo, deleteVideoSave,
   editChapter,
   editVideo,
   getAllChapterInfo
@@ -106,6 +127,12 @@ class VideoTemplate {
   id = null
   title = null
   sort = 0
+  isFree = true
+  videoSourceId = null
+  videoOriginalName = null
+  duration = null
+  status = null
+  fileList = []
 }
 export default {
   name: 'CourseChapter',
@@ -117,6 +144,7 @@ export default {
   },
   data() {
     return {
+      actionUrl: process.env.VUE_APP_BASE_API + '/eduvod/video/uploadVideo',
       VideoDialog: {
         title: '',
         index: null,
@@ -133,7 +161,14 @@ export default {
       videoInfo: { // 小节
         id: null,
         title: null,
-        sort: 0
+        isFree: true, // 1代表免费 0代表收费
+        sort: 0,
+        videoSourceId: null, // 云端视频资源
+        videoOriginalName: null, // 原始文件名称
+        duration: null,
+        size: null,
+        status: null,
+        fileList: []
       },
       ChapterDialogVisible: false,
       VideoDialogVisible: false,
@@ -157,6 +192,46 @@ export default {
     }
   },
   methods: {
+    // 视频上传start
+    // 移除前
+    beforeRemove(file, fileList) {
+      return this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+    },
+    // 上传成功钩子
+    successHandler(res, file) {
+      this.videoInfo.videoSourceId = res.data.videoId
+      this.videoInfo.videoOriginalName = file.name
+      this.videoInfo.size = file.size
+      this.videoInfo.videoOriginalName = file.name
+      this.videoInfo.fileList.push({ name: file.name })
+    },
+    // 限制视频个数
+    handleExceed() {
+      this.$message({
+        type: 'warning',
+        message: '一个小节只能上传一个视频'
+      })
+    },
+    // 移除函数
+    handleRemove(file) {
+      const a = editVideo({ id: this.videoInfo.id, size: 0, videoSourceId: '', videoOriginalName: '' })
+      const b = deleteVideoSave(this.videoInfo.videoSourceId)
+      Promise.all([a, b]).then(() => {
+        this.$message({
+          type: 'warning',
+          message: `移除了${file.name}`
+        })
+      })
+    },
+    // 上传前
+    beforeUpload(file) {
+      // console.log(file.name)
+    },
+    // 视频上传end
     // 添加小节的对话框
     addVideoDialog(index) {
       this.isUpdate = false
@@ -171,6 +246,13 @@ export default {
       this.VideoDialog.title = '编辑小节'
       this.VideoDialogVisible = true
       this.videoInfo = { ...this.primaryChapter[primary].children[videoIndex] }
+      // this.videoInfo.videoOriginalName = 'wdnmd'
+      // 先判断该小节的videoOriginalName是否有值
+      if (this.videoInfo.videoSourceId) {
+        this.videoInfo.fileList = [{ name: this.videoInfo.videoOriginalName }]
+      } else {
+        this.videoInfo.fileList = []
+      }
       this.VideoDialog.index = primary
       this.VideoDialog.videoIndex = videoIndex
     },
@@ -202,7 +284,12 @@ export default {
     },
     // 删除小节
     removeVideo(primaryIndex, videoIndex) {
-      deleteVideo(this.primaryChapter[primaryIndex].children[videoIndex].id).then(res => {
+      const arr = []
+      if (this.primaryChapter[primaryIndex].children[videoIndex].videoSourceId) {
+        arr.push(deleteVideoSave(this.primaryChapter[primaryIndex].children[videoIndex].videoSourceId))
+      }
+      arr.push(deleteVideo(this.primaryChapter[primaryIndex].children[videoIndex].id))
+      Promise.all(arr).then(res => {
         this.$message({
           type: 'success',
           message: this.primaryChapter[primaryIndex].children[videoIndex].title + '小节删除成功'
@@ -282,5 +369,8 @@ export default {
 }
 .video-btn{
   margin-left: 20px;
+}
+.is-upload-video{
+  margin-left: 10px;
 }
 </style>
