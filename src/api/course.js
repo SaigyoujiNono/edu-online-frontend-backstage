@@ -102,7 +102,7 @@ export function editVideo(video) {
 // 删除小节中的视频存储
 export function deleteVideoSave(id) {
   return request({
-    url: `/eduvod/video/deleteVideo/${id}`,
+    url: `/eduservice/video/videoSingle/${id}`,
     method: 'delete'
   })
 }

@@ -72,7 +72,7 @@
           <el-radio v-model="videoInfo.isFree" :label="true">免费</el-radio>
           <el-radio v-model="videoInfo.isFree" :label="false">收费</el-radio>
         </el-form-item>
-        <el-form-item label="添加视频">
+        <el-form-item v-if="videoInfo.id" label="添加视频">
           <el-upload
             :action="actionUrl"
             :on-remove="handleRemove"
@@ -207,7 +207,9 @@ export default {
       this.videoInfo.videoOriginalName = file.name
       this.videoInfo.size = file.size
       this.videoInfo.videoOriginalName = file.name
-      this.videoInfo.fileList.push({ name: file.name })
+      editVideo(this.videoInfo).then(() => {
+        this.videoInfo.fileList.push({ name: file.name })
+      })
     },
     // 限制视频个数
     handleExceed() {
@@ -218,13 +220,16 @@ export default {
     },
     // 移除函数
     handleRemove(file) {
-      const a = editVideo({ id: this.videoInfo.id, size: 0, videoSourceId: '', videoOriginalName: '' })
-      const b = deleteVideoSave(this.videoInfo.videoSourceId)
-      Promise.all([a, b]).then(() => {
+      deleteVideoSave(this.videoInfo.id).then(() => {
+        this.videoInfo.videoSourceId = null
+        this.videoInfo.videoOriginalName = null
+        this.videoInfo.duration = null
+        this.videoInfo.size = null
         this.$message({
           type: 'warning',
           message: `移除了${file.name}`
         })
+        editVideo(this.videoInfo)
       })
     },
     // 上传前
@@ -284,12 +289,7 @@ export default {
     },
     // 删除小节
     removeVideo(primaryIndex, videoIndex) {
-      const arr = []
-      if (this.primaryChapter[primaryIndex].children[videoIndex].videoSourceId) {
-        arr.push(deleteVideoSave(this.primaryChapter[primaryIndex].children[videoIndex].videoSourceId))
-      }
-      arr.push(deleteVideo(this.primaryChapter[primaryIndex].children[videoIndex].id))
-      Promise.all(arr).then(res => {
+      deleteVideo(this.primaryChapter[primaryIndex].children[videoIndex].id).then(res => {
         this.$message({
           type: 'success',
           message: this.primaryChapter[primaryIndex].children[videoIndex].title + '小节删除成功'
