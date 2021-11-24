@@ -73,7 +73,7 @@ export default {
         // autoCropWidth: 300, // 默认生成截图框宽度
         // autoCropHeight: 200, // 默认生成截图框高度
         fixedBox: false, // 固定截图框大小 不允许改变
-        fixed: true, // 是否开启截图框宽高固定比例
+        fixed: false, // 是否开启截图框宽高固定比例
         fixedNumber: [5, 5], // 截图框的宽高比例
         full: true, // 是否输出原图比例的截图
         canMoveBox: true, // 截图框能否拖动
@@ -85,10 +85,10 @@ export default {
   },
   methods: {
     uploadImgPS() {
+      this.cropperVisible = false
       this.$refs.cropper.getCropData(data => {
         const file = convertBase64UrlToBlob(data)
         uploadImg(file, this.avatarAction).then(res => {
-          this.cropperVisible = false
           this.uploadSuccessful(res)
         }).catch(err => {
           console.log(err)
@@ -121,7 +121,7 @@ export default {
   width: 235px;
   height: 235px;
   transform: rotate(360deg);
-  box-shadow: 0 0 15px rgba(0,0,0,.8);
+  box-shadow: 0 0 5px rgba(0,0,0,.8);
 }
 .avatar-container{
   text-align: center;

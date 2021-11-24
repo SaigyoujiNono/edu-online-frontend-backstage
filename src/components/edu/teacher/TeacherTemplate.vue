@@ -36,7 +36,7 @@
       <AvatarUpload :avatar="teacher.avatar" :avatar-action="avatarAction" @upload-successful="uploadSuccessful" />
     </el-form-item>
     <el-form-item label="排序" prop="sort">
-      <el-input-number v-model="teacher.sort" :min="0" :max="2" />
+      <el-input-number v-model="teacher.sort" :min="0" />
     </el-form-item>
   </el-form>
 </template>
@@ -64,7 +64,7 @@ export default {
         intro: null,
         career: null,
         level: 1,
-        avatar: 'https://mqd-online-edu.oss-cn-guangzhou.aliyuncs.com/2021/10/22/eaeb3bc929b34ef486447c9ab84f85ef.png',
+        avatar: 'https://img0.baidu.com/it/u=1489807627,808259306&fm=26&fmt=auto',
         sort: null
       },
       rules: {

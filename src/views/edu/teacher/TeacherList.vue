@@ -41,7 +41,7 @@
       </el-table-column>
       <el-table-column prop="avatar" label="讲师头像" width="100">
         <template slot-scope="scope">
-          <img height="40px" :src="scope.row.avatar" alt="">
+          <img height="40px" width="50px" :src="scope.row.avatar" alt="">
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" width="120" />
@@ -122,6 +122,12 @@ export default {
         level: null,
         start: null,
         end: null
+      },
+      teacherQuery2: {
+        name: null,
+        level: null,
+        start: null,
+        end: null
       }
     }
   },
@@ -132,16 +138,17 @@ export default {
     // 请求数据
     fetchData(option) {
       this.listLoading = true
-      getTeacher(option.current, option.size, option.teacherQuery).then(response => {
+      return getTeacher(option.current, option.size, option.teacherQuery).then(response => {
         this.teachers = response.data.teacherInfo.teachers
         this.pageInfo.current = response.data.teacherInfo.current
         this.pageInfo.pages = response.data.teacherInfo.pages
         this.pageInfo.total = response.data.teacherInfo.total
         this.listLoading = false
+        return Promise.resolve()
       })
     },
     handleCurrentChange(current) {
-      this.fetchData({ current: current, teacherQuery: this.teacherQuery })
+      this.fetchData({ current: current, teacherQuery: this.teacherQuery2 })
     },
     // 修改
     updateRow(t) {
@@ -159,7 +166,9 @@ export default {
       this.fetchData({ current: this.pageInfo.current, teacherQuery: this.teacherQuery })
     },
     queryTeacher() {
-      this.fetchData({ current: 1, teacherQuery: this.teacherQuery })
+      this.fetchData({ current: 1, teacherQuery: this.teacherQuery }).then(() => {
+        this.teacherQuery2 = { ...this.teacherQuery }
+      })
     },
     // 删除数据
     deleteRow(id) {

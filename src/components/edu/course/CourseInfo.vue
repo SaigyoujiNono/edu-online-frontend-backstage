@@ -82,7 +82,7 @@ export default {
         subjectId: null,
         teacherId: null,
         description: null,
-        cover: 'https://mqd-online-edu.oss-cn-guangzhou.aliyuncs.com/2021/10/22/eaeb3bc929b34ef486447c9ab84f85ef.png',
+        cover: 'https://img0.baidu.com/it/u=211849578,1713280059&fm=26&fmt=auto',
         price: null
       },
       rules: {
@@ -108,7 +108,11 @@ export default {
         if (val) {
           getSubject({ parentId: val }).then(res => {
             this.subjectInfo.children = res.data.primarySubList
-            this.courseInfo.subjectId = this.subjectInfo.children[0].id
+            if (this.subjectInfo.children[0]) {
+              this.courseInfo.subjectId = this.subjectInfo.children[0].id
+            } else {
+              this.courseInfo.subjectId = null
+            }
           })
         }
       },

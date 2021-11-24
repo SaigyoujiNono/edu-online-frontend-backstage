@@ -132,6 +132,27 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/banner',
+    component: Layout,
+    redirect: '/banner/list',
+    name: '轮播图管理',
+    meta: { title: '轮播图管理', icon: 'el-icon-files' },
+    children: [
+      {
+        path: 'list',
+        name: '轮播图',
+        component: () => import('@/views/edu/banner/BannerList'),
+        meta: { title: '轮播图', icon: 'el-icon-s-grid' }
+      },
+      {
+        path: 'add',
+        name: '添加轮播图',
+        component: () => import('@/views/edu/banner/BannerList'),
+        meta: { title: '添加轮播图', icon: 'el-icon-plus' }
+      }
+    ]
+  },
+  {
     path: '/example',
     component: Layout,
     redirect: '/example/table',

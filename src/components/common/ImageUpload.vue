@@ -16,7 +16,7 @@ export default {
   props: {
     url: {
       type: String,
-      default: 'https://mqd-online-edu.oss-cn-guangzhou.aliyuncs.com/2021/10/22/eaeb3bc929b34ef486447c9ab84f85ef.png'
+      default: 'https://img0.baidu.com/it/u=211849578,1713280059&fm=26&fmt=auto'
     }
   },
   data() {
