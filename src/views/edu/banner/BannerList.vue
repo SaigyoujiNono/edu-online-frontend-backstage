@@ -10,7 +10,7 @@
       <el-table-column
         property="title"
         label="标题"
-        width="200"
+        width="250"
       />
       <el-table-column
         property="imageUrl"
@@ -134,6 +134,11 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    // 更新一张图
+    updateRow(id) {
+      // 跳转到信息页
+      this.$router.push({ path: '/banner/info', query: { id }})
     }
   }
 }

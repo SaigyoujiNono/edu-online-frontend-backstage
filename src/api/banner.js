@@ -14,6 +14,14 @@ export function addBanner(banner) {
   })
 }
 
+// 获取单个banner的信息
+export function getBannerById(id) {
+  return request({
+    url: `/cmsservice/banner/banner/${id}`,
+    method: 'get'
+  })
+}
+
 // 删除一个banner
 export function delBanner(id) {
   return request({

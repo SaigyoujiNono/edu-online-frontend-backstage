@@ -16,7 +16,7 @@
         <el-input-number v-model="bannerInfo.sort" :min="0" label="排序" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">{{ bannerInfo.id ? '保存' : '立即创建' }}</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -68,6 +68,8 @@ import { VueCropper } from 'vue-cropper'
 import { verifyImgType } from '@/utils/validate'
 import { convertBase64UrlToBlob } from '@/utils/imgHandler'
 import { uploadImg } from '@/api/oss'
+import { Loading } from 'element-ui'
+import { addBanner, getBannerById, updateBanner } from '@/api/banner'
 export default {
   name: 'BannerInfo',
   components: {
@@ -76,6 +78,7 @@ export default {
   data() {
     return {
       bannerInfo: {
+        id: null,
         title: null,
         imageUrl: 'https://tse4-mm.cn.bing.net/th/id/OIP-C.L3qRUIu3UjB3Dp0sUOFcgQHaDJ?w=337&h=148&c=7&r=0&o=5&pid=1.7',
         linkUrl: null,
@@ -95,8 +98,7 @@ export default {
           { type: 'url', message: '必须是一个url', trigger: 'blur' }
         ],
         sort: [
-          { required: true, message: '排序', trigger: 'blur' },
-          { min: 0, message: '不能小于0', trigger: 'blur' }
+          { required: true, message: '排序', trigger: 'blur' }
         ]
       },
       cropperVisible: false,
@@ -117,12 +119,47 @@ export default {
         original: false, // 上传图片按照原始比例渲染
         centerBox: false, // 截图框是否被限制在图片里面
         infoTrue: true // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
-      }
+      },
+      fullLoading: null
     }
   },
   methods: {
     // 提交表单
-    submitForm() {},
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.fullLoading = Loading.service({ fullscreen: true })
+          if (!this.bannerInfo.id) {
+            addBanner(this.bannerInfo).then(() => {
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              })
+              this.$router.push('/banner/list')
+            }).finally(() => {
+              this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+                this.fullLoading.close()
+              })
+            })
+          } else {
+            updateBanner(this.bannerInfo).then(() => {
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
+              this.$router.push('/banner/list')
+            }).finally(() => {
+              this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+                this.fullLoading.close()
+              })
+            })
+          }
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
     // 重置表单
     resetForm(formName) {
       this.$refs[formName].resetFields()
@@ -148,6 +185,19 @@ export default {
       if (!verifyImgType(file)) return false
       return false
     }
+  },
+  beforeRouteEnter(to, from, next) {
+    // 先获取banner是否存在
+    next(vm => {
+      if (to.query.id) {
+        getBannerById(to.query.id).then(res => {
+          vm.bannerInfo = { ...res.data.bannerInfo }
+        }).catch(err => {
+          console.error(err)
+          vm.$router.push('/404')
+        })
+      }
+    })
   }
 }
 </script>
