@@ -10,6 +10,15 @@ export function addCourseInfo(info) {
     }
   })
 }
+
+// 删除课程信息
+export function delCourseInfo(id) {
+  return request({
+    url: '/eduservice/course/courseInfo/'+id,
+    method: 'delete'
+  })
+}
+
 // 更新课程信息
 export function updateCourseInfo(info) {
   return request({

@@ -2,39 +2,42 @@
   <div class="course-chapter-container">
     <el-button type="primary" class="header-btn" icon="el-icon-edit" @click="addChapterDialog">添加章节</el-button>
     <el-collapse v-model="activeName">
-      <el-collapse-item v-for="(chapter,index) in primaryChapter" :key="chapter.id" :name="index+1+''">
-        <template slot="title">
-          <h1 style="display: inline-block">{{ chapter.title }}</h1>
-          <el-button type="primary" class="title-btn" size="mini" icon="el-icon-edit" @click.stop="editChapter(index)">编辑</el-button>
-          <el-button type="primary" class="title-btn" size="mini" icon="el-icon-circle-plus-outline" @click.stop="addVideoDialog(index)">添加小节</el-button>
-          <el-popconfirm
-            confirm-button-text="确认"
-            cancel-button-text="不用了"
-            icon="el-icon-info"
-            icon-color="red"
-            title="确定要删除这个章节吗？如果该章节下存在小节将无法删除"
-            @onConfirm="removeChapter(index)"
-          >
-            <el-button slot="reference" type="danger" class="title-btn" size="mini" icon="el-icon-delete" @click.stop>删除</el-button>
-          </el-popconfirm>
-        </template>
-        <el-card v-for="(video,vi) in chapter.children" :key="video.id" class="second-video" shadow="hover">
-          <h2 style="display: inline-block">{{ video.title }}</h2>
-          <el-button v-if="video.videoSourceId" size="mini" class="is-upload-video" type="success" icon="el-icon-check" circle />
-          <el-button v-else type="danger" size="mini" class="is-upload-video" icon="el-icon-close" circle />
-          <el-button type="text" class="video-btn" size="mini" @click.stop="editVideoDialog(index,vi)">编辑</el-button>
-          <el-popconfirm
-            confirm-button-text="确认"
-            cancel-button-text="不用了"
-            icon="el-icon-info"
-            icon-color="red"
-            title="确定要删除这个小节吗？"
-            @onConfirm="removeVideo(index, vi)"
-          >
-            <el-button slot="reference" type="text" style="color: red" class="video-btn" size="mini">删除</el-button>
-          </el-popconfirm>
-        </el-card>
-      </el-collapse-item>
+      <el-card v-if="primaryChapter.length">
+        <el-collapse-item v-for="(chapter,index) in primaryChapter" :key="chapter.id" :name="index+1+''">
+          <template slot="title">
+            <h2 style="display: inline-block">{{ chapter.title }}</h2>
+            <el-button type="primary" class="title-btn" size="mini" icon="el-icon-edit" @click.stop="editChapter(index)">编辑</el-button>
+            <el-button type="primary" class="title-btn" size="mini" icon="el-icon-circle-plus-outline" @click.stop="addVideoDialog(index)">添加小节</el-button>
+            <el-popconfirm
+              confirm-button-text="确认"
+              cancel-button-text="不用了"
+              icon="el-icon-info"
+              icon-color="red"
+              title="确定要删除这个章节吗？如果该章节下存在小节将无法删除"
+              @onConfirm="removeChapter(index)"
+            >
+              <el-button slot="reference" type="danger" class="title-btn" size="mini" icon="el-icon-delete" @click.stop>删除</el-button>
+            </el-popconfirm>
+          </template>
+          <el-card v-for="(video,vi) in chapter.children" :key="video.id" class="second-video" shadow="hover">
+            <el-button v-if="video.isFree" type="success" size="mini" style="margin-right: 10px;" circle>免费</el-button>
+            <h2 style="display: inline-block">{{ video.title }}</h2>
+            <el-button v-if="video.videoSourceId" size="mini" class="is-upload-video" type="success" icon="el-icon-check" circle />
+            <el-button v-else type="danger" size="mini" class="is-upload-video" icon="el-icon-close" circle />
+            <el-button type="text" class="video-btn" size="mini" @click.stop="editVideoDialog(index,vi)">编辑</el-button>
+            <el-popconfirm
+              confirm-button-text="确认"
+              cancel-button-text="不用了"
+              icon="el-icon-info"
+              icon-color="red"
+              title="确定要删除这个小节吗？"
+              @onConfirm="removeVideo(index, vi)"
+            >
+              <el-button slot="reference" type="text" style="color: red" class="video-btn" size="mini">删除</el-button>
+            </el-popconfirm>
+          </el-card>
+        </el-collapse-item>
+      </el-card>
     </el-collapse>
     <!--添加章节的对话框-->
     <el-dialog
@@ -279,9 +282,12 @@ export default {
       video.chapterId = this.primaryChapter[this.VideoDialog.index].id
       addVideo(video).then(res => {
         video.id = res.data.video.id
+        if (!this.primaryChapter[this.VideoDialog.index].children) {
+          this.primaryChapter[this.VideoDialog.index].children = []
+        }
         this.primaryChapter[this.VideoDialog.index].children.push(video)
       }).finally(() => {
-        if (this.primaryChapter[this.VideoDialog.index].children.length > 1) {
+        if (this.primaryChapter[this.VideoDialog.index].children && this.primaryChapter[this.VideoDialog.index].children.length > 1) {
           this.sortBySort(this.primaryChapter[this.VideoDialog.index].children)
         }
         this.VideoDialogVisible = false
@@ -315,7 +321,8 @@ export default {
       const chapterAdd = { ...this.chapterInfo }
       chapterAdd.courseId = this.courseId
       addChapter(chapterAdd).then(res => {
-        this.primaryChapter.push(chapterAdd)
+        const chapter = { ...res.data.chapter }
+        this.primaryChapter.push(chapter)
         // 如果当前长度大于1则进行排序
         if (this.primaryChapter.length > 1) {
           this.sortBySort(this.primaryChapter)

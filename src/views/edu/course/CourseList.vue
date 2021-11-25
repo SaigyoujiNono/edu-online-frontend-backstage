@@ -122,13 +122,14 @@
       <el-table-column
         fixed="right"
         label="操作"
-        width="200"
+        width="300"
       >
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="editCourse(1,scope.row.id)">修改基本信息</el-button>
           <el-button type="text" size="small" @click="editCourse(2,scope.row.id)">修改大纲</el-button>
           <el-button v-if="scope.row.status === 'Normal'" type="text" size="small" @click="publishCourseBtn({id: scope.row.id, pub: 0})">取消发布</el-button>
           <el-button v-else type="text" size="small" @click="publishCourseBtn({id: scope.row.id, pub: 1})">发布</el-button>
+          <el-button type="text" style="color: red;" size="small" @click="delCourseInfo(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -146,7 +147,7 @@
 </template>
 
 <script>
-import { getCourseList, publishCourse } from '@/api/course'
+import { delCourseInfo, getCourseList, publishCourse } from '@/api/course'
 import { getSubject } from '@/api/subject'
 
 export default {
@@ -165,6 +166,19 @@ export default {
         secondSubjectList: null
       },
       courseQuery: {
+        title: null,
+        subjectParentId: null,
+        subjectId: null,
+        status: null,
+        priceMin: null,
+        priceMax: null,
+        minBuyCount: null,
+        maxBuyCount: null,
+        minViewCount: null,
+        maxViewCount: null
+      },
+      // 翻页时需要的数据
+      courseQuery2: {
         title: null,
         subjectParentId: null,
         subjectId: null,
@@ -212,7 +226,7 @@ export default {
     // 改变当前页码
     handleCurrentChange(current) {
       this.pageInfo.current = current
-      this.fetchCourseList(this.pageInfo)
+      this.fetchCourseList({ ...this.pageInfo, ...this.courseQuery2 })
     },
     // 根据id修改课程信息，跳转到指定信息页
     editCourse(step, id) {
@@ -224,12 +238,31 @@ export default {
         return
       }
       this.isSubmitting = true
+      this.pageInfo.current = 1
       this.fetchCourseList({ ...this.pageInfo, ...this.courseQuery })
+      this.courseQuery2 = { ...this.courseQuery }
     },
     // 发布课程
     publishCourseBtn(status) {
       publishCourse(status).then(res => {
         this.fetchCourseList({ ...this.pageInfo, ...this.courseQuery })
+      })
+    },
+    // 删除课程
+    delCourseInfo(id) {
+      this.$confirm('此操作将删除该课程, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return delCourseInfo(id)
+      }).then(() => {
+        this.pageInfo.current = 1
+        this.fetchCourseList({ ...this.pageInfo, ...this.courseQuery })
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
       })
     }
   }

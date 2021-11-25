@@ -48,7 +48,6 @@ export default {
   },
   methods: {
     removeNode(node, data) {
-      console.log(data)
       delSubject(data.id).then(res => {
         this.$message({
           type: 'success',
