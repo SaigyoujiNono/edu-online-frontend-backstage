@@ -145,9 +145,9 @@ export const constantRoutes = [
         meta: { title: '轮播图', icon: 'el-icon-s-grid' }
       },
       {
-        path: 'add',
+        path: 'info',
         name: '添加轮播图',
-        component: () => import('@/views/edu/banner/BannerList'),
+        component: () => import('@/views/edu/banner/BannerInfo'),
         meta: { title: '添加轮播图', icon: 'el-icon-plus' }
       }
     ]
