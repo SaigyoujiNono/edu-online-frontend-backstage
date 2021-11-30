@@ -8,7 +8,6 @@ export function convertBase64UrlToBlob(urlData) {
     ia[i] = bytes.charCodeAt(i)
   }
   const temp = new Blob([ab])
-  console.log('convertBase64UrlToBlob', temp)
   return blobToFile(temp)
 }
 

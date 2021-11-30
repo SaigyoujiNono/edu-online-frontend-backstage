@@ -111,6 +111,7 @@ import {
   editVideo,
   getAllChapterInfo
 } from '@/api/course'
+import { videoAction } from '@/api/oss'
 
 function sortByProps(props) {
   return function(val1, val2) {
@@ -147,7 +148,7 @@ export default {
   },
   data() {
     return {
-      actionUrl: process.env.VUE_APP_BASE_API + '/eduvod/video/uploadVideo',
+      actionUrl: process.env.VUE_APP_BASE_API + videoAction,
       VideoDialog: {
         title: '',
         index: null,
@@ -197,7 +198,7 @@ export default {
   methods: {
     // 视频上传start
     // 移除前
-    beforeRemove(file, fileList) {
+    beforeRemove() {
       return this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -266,7 +267,7 @@ export default {
     },
     // 编辑小节确认
     editVideoConfirm() {
-      editVideo(this.videoInfo).then(res => {
+      editVideo(this.videoInfo).then(() => {
         this.primaryChapter[this.VideoDialog.index].children[this.VideoDialog.videoIndex] = { ...this.videoInfo }
       }).finally(() => {
         if (this.primaryChapter[this.VideoDialog.index].children.length > 1) {
@@ -295,7 +296,7 @@ export default {
     },
     // 删除小节
     removeVideo(primaryIndex, videoIndex) {
-      deleteVideo(this.primaryChapter[primaryIndex].children[videoIndex].id).then(res => {
+      deleteVideo(this.primaryChapter[primaryIndex].children[videoIndex].id).then(() => {
         this.$message({
           type: 'success',
           message: this.primaryChapter[primaryIndex].children[videoIndex].title + '小节删除成功'
@@ -333,7 +334,7 @@ export default {
     },
     // 删除章节
     removeChapter(index) {
-      deleteChapter(this.primaryChapter[index].id).then(res => {
+      deleteChapter(this.primaryChapter[index].id).then(() => {
         this.$message({
           type: 'success',
           message: this.primaryChapter[index].title + '删除成功'
@@ -343,7 +344,7 @@ export default {
     },
     // 编辑章节
     editChapterSave() {
-      editChapter(this.chapterInfo).then(res => {
+      editChapter(this.chapterInfo).then(() => {
         this.primaryChapter[this.primaryChapterIndex] = { ...this.chapterInfo }
         // 如果当前长度大于1则进行排序
         if (this.primaryChapter.length > 1) {

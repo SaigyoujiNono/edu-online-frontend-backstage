@@ -33,7 +33,7 @@
       <el-radio v-model="teacher.level" :label="2">首席讲师</el-radio>
     </el-form-item>
     <el-form-item label="讲师头像">
-      <AvatarUpload :avatar="teacher.avatar" :avatar-action="avatarAction" @upload-successful="uploadSuccessful" />
+      <AvatarUpload :avatar="teacher.avatar" @upload-successful="uploadSuccessful" />
     </el-form-item>
     <el-form-item label="排序" prop="sort">
       <el-input-number v-model="teacher.sort" :min="0" />
@@ -57,7 +57,6 @@ export default {
   },
   data() {
     return {
-      avatarAction: process.env.VUE_APP_BASE_API + '/oss/file/imgUpload',
       teacher: {
         id: null,
         name: null,

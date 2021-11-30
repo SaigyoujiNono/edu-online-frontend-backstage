@@ -19,15 +19,14 @@ export default {
         level: '1',
         avatar: 'https://mqd-online-edu.oss-cn-guangzhou.aliyuncs.com/2021/10/22/eaeb3bc929b34ef486447c9ab84f85ef.png',
         sort: '0'
-      },
-      avatarAction: 'http://127.0.0.1:8002/oss/file/avatar'
+      }
     }
   },
   methods: {
     onSubmit(t) {
       this.$refs.teacherTemplate.onSubmit(t)
     },
-    uploadSuccessful(response, file, fileList) {
+    uploadSuccessful(response) {
       this.teacher.avatar = response.data.url
       this.$message({
         message: '上传成功',

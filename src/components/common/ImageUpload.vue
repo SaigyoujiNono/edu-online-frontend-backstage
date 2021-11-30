@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { action } from '@/api/oss'
 export default {
   name: 'ImageUpload',
   props: {
@@ -21,11 +22,11 @@ export default {
   },
   data() {
     return {
-      actionUrl: process.env.VUE_APP_BASE_API + '/oss/file/imgUpload'
+      actionUrl: action
     }
   },
   methods: {
-    uploadSuccessful(response, file, fileList) {
+    uploadSuccessful(response) {
       this.$emit('img-upload', response.data.url)
     }
   }

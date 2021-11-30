@@ -1,7 +1,9 @@
 import request from '@/utils/request'
 
+const baseURL = '/edu/admin'
+
 export function getTeacher(current, size = 10, query) {
-  let url = '/eduservice/teacher/teacher'
+  let url = baseURL + '/teacher'
   if (current) {
     url += `/${current}`
   }
@@ -17,7 +19,7 @@ export function getTeacher(current, size = 10, query) {
 
 export function addTeacher(teacher) {
   return request({
-    url: '/eduservice/teacher/teacher',
+    url: baseURL + '/teacher',
     method: 'post',
     data: {
       ...teacher
@@ -26,7 +28,7 @@ export function addTeacher(teacher) {
 }
 export function updateTeacher(teacher) {
   return request({
-    url: '/eduservice/teacher/teacher',
+    url: baseURL + '/teacher',
     method: 'put',
     data: {
       ...teacher
@@ -36,14 +38,14 @@ export function updateTeacher(teacher) {
 
 export function deleteTeacher(id) {
   return request({
-    url: `/eduservice/teacher/teacher/${id}`,
+    url: baseURL + `/teacher/${id}`,
     method: 'delete'
   })
 }
 
 export function getTeacherAll() {
   return request({
-    url: '/eduservice/teacher/teacherAll',
+    url: baseURL + '/teacherAll',
     method: 'get'
   })
 }

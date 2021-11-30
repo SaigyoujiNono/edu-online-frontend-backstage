@@ -51,10 +51,6 @@ export default {
   name: 'AvatarUpload',
   components: { VueCropper },
   props: {
-    avatarAction: {
-      type: String,
-      default: ''
-    },
     avatar: {
       type: String,
       default: ''
@@ -88,7 +84,7 @@ export default {
       this.cropperVisible = false
       this.$refs.cropper.getCropData(data => {
         const file = convertBase64UrlToBlob(data)
-        uploadImg(file, this.avatarAction).then(res => {
+        uploadImg(file).then(res => {
           this.uploadSuccessful(res)
         }).catch(err => {
           console.log(err)
@@ -103,7 +99,7 @@ export default {
     openCropper() {
       this.cropperVisible = true
     },
-    uploadSuccessful(response, file, fileList) {
+    uploadSuccessful(response) {
       this.$emit('upload-successful', response.data.url)
     }
   }

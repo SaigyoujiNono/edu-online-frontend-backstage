@@ -1,15 +1,15 @@
 import request from '@/utils/request'
-
+const baseURL = '/edu/admin'
 export function getSubjectTree() {
   return request({
-    url: '/eduservice/subject/tree',
+    url: baseURL + '/tree',
     method: 'get'
   })
 }
 
 export function getSubject(wrapper) {
   return request({
-    url: '/eduservice/subject/subject',
+    url: baseURL + '/subject',
     method: 'get',
     params: {
       ...wrapper
@@ -19,7 +19,7 @@ export function getSubject(wrapper) {
 
 export function addSubject(sub) {
   return request({
-    url: '/eduservice/subject/subject',
+    url: baseURL + '/subject',
     method: 'post',
     data: {
       ...sub
@@ -29,7 +29,7 @@ export function addSubject(sub) {
 
 export function delSubject(id) {
   return request({
-    url: `/eduservice/subject/subject/${id}`,
+    url: baseURL + `/subject/${id}`,
     method: 'delete'
   })
 }

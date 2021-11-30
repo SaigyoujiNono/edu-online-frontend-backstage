@@ -1,9 +1,9 @@
 import request from '@/utils/request'
-
+const baseURL = '/edu/admin'
 // 添加课程信息
 export function addCourseInfo(info) {
   return request({
-    url: '/eduservice/course/courseInfo',
+    url: baseURL + '/courseInfo',
     method: 'post',
     data: {
       ...info
@@ -14,7 +14,7 @@ export function addCourseInfo(info) {
 // 删除课程信息
 export function delCourseInfo(id) {
   return request({
-    url: '/eduservice/course/courseInfo/' + id,
+    url: baseURL + '/courseInfo/' + id,
     method: 'delete'
   })
 }
@@ -22,7 +22,7 @@ export function delCourseInfo(id) {
 // 更新课程信息
 export function updateCourseInfo(info) {
   return request({
-    url: '/eduservice/course/courseInfo',
+    url: baseURL + '/courseInfo',
     method: 'put',
     data: {
       ...info
@@ -32,7 +32,7 @@ export function updateCourseInfo(info) {
 // 获取课程信息
 export function getCourseInfo(option) {
   return request({
-    url: '/eduservice/course/courseInfo',
+    url: baseURL + '/courseInfo',
     method: 'get',
     params: {
       ...option
@@ -43,7 +43,7 @@ export function getCourseInfo(option) {
 // 获取该课程所有章节和小节信息
 export function getAllChapterInfo(id) {
   return request({
-    url: '/eduservice/chapter/chapter/' + id,
+    url: baseURL + '/chapter/' + id,
     method: 'get'
   })
 }
@@ -51,7 +51,7 @@ export function getAllChapterInfo(id) {
 // 添加章节
 export function addChapter(chapter) {
   return request({
-    url: '/eduservice/chapter/chapter',
+    url: baseURL + '/chapter',
     method: 'post',
     data: {
       ...chapter
@@ -62,7 +62,7 @@ export function addChapter(chapter) {
 // 修改章节
 export function editChapter(chapter) {
   return request({
-    url: '/eduservice/chapter/chapter',
+    url: baseURL + '/chapter',
     method: 'put',
     data: {
       ...chapter
@@ -73,7 +73,7 @@ export function editChapter(chapter) {
 // 删除章节
 export function deleteChapter(chapterId) {
   return request({
-    url: '/eduservice/chapter/chapter/' + chapterId,
+    url: baseURL + '/chapter/' + chapterId,
     method: 'delete'
   })
 }
@@ -81,7 +81,7 @@ export function deleteChapter(chapterId) {
 // 添加小节
 export function addVideo(video) {
   return request({
-    url: '/eduservice/video/video',
+    url: baseURL + '/video',
     method: 'post',
     data: {
       ...video
@@ -92,7 +92,7 @@ export function addVideo(video) {
 // 根据id删除小节
 export function deleteVideo(videoId) {
   return request({
-    url: '/eduservice/video/video/' + videoId,
+    url: baseURL + '/video/' + videoId,
     method: 'delete'
   })
 }
@@ -100,7 +100,7 @@ export function deleteVideo(videoId) {
 // 修改小节信息
 export function editVideo(video) {
   return request({
-    url: '/eduservice/video/video/',
+    url: baseURL + '/video/',
     method: 'put',
     data: {
       ...video
@@ -111,7 +111,7 @@ export function editVideo(video) {
 // 删除小节中的视频存储
 export function deleteVideoSave(id) {
   return request({
-    url: `/eduservice/video/videoSingle/${id}`,
+    url: baseURL + `/videoSingle/${id}`,
     method: 'delete'
   })
 }
@@ -119,7 +119,7 @@ export function deleteVideoSave(id) {
 // 获取发布前的课程基本信息
 export function getBeforePublishCourse(courseId) {
   return request({
-    url: '/eduservice/course/publishCourse/' + courseId,
+    url: baseURL + '/publishCourse/' + courseId,
     method: 'get'
   })
 }
@@ -127,7 +127,7 @@ export function getBeforePublishCourse(courseId) {
 // 确认发布课程
 export function publishCourse(status) {
   return request({
-    url: `/eduservice/course/publish/${status.pub}/${status.id}`,
+    url: baseURL + `/publishCourse/${status.pub}/${status.id}`,
     method: 'put'
   })
 }
@@ -135,7 +135,7 @@ export function publishCourse(status) {
 // 根据条件查询获取课程列表
 export function getCourseList(query) {
   return request({
-    url: '/eduservice/course/getCourseList',
+    url: baseURL + '/course',
     method: 'get',
     params: {
       ...query

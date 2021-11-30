@@ -1,8 +1,10 @@
 import { verifyImgSize } from '@/utils/validate'
 import request from '@/utils/request'
 
+export const action = '/oss/file/imgUpload'
+export const videoAction = '/vod/video'
 // 上传图片
-export function uploadImg(file, action) {
+export function uploadImg(file) {
   return new Promise((resolve, reject) => {
     if (!verifyImgSize(file)) {
       reject('图片大于5MB，请重新裁剪！')
