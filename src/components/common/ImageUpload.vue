@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      actionUrl: action
+      actionUrl: process.env.VUE_APP_BASE_API + action
     }
   },
   methods: {
